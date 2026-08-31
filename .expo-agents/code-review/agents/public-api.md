@@ -107,6 +107,10 @@ Flag, as `warning`, new API that:
 - accepts invalid states in an exported type — mutually exclusive fields both optional in
   one object where a discriminated union encodes the constraint. Runtime validation of the
   same constraint is evidence the type is wrong, not a substitute.
+- carries JSDoc that names a product by a fragment ("Play" for Google Play) or runs long
+  where two short sentences would do. JSDoc ships in the published types and feeds the
+  generated docs site, so it is API surface — and it is the one prose `docs/` tooling never
+  lints. Hold it to `guides/Expo Documentation Writing Style Guide.md`.
 
 A stated reason for diverging (in a comment or the PR description) ends the finding —
 verify the stated constraint if you can, then move on. Shipped API, naming, and anything a
