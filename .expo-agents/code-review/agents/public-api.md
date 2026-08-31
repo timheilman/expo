@@ -1,5 +1,5 @@
 ---
-description: Breaking changes to the published surface of independently versioned packages — exports maps, type-level breaks that still compile in-repo, enum and value-namespace loss, peerDependencies narrowing, sideEffects pruning, and breaking changes filed under the wrong changelog heading.
+description: Breaking changes to the published surface of independently versioned packages — exports maps, type-level breaks that still compile in-repo, enum and value-namespace loss, peerDependencies narrowing, sideEffects pruning, and breaking changes filed under the wrong changelog heading. Also reviews NEW public API against the documented Expo Modules API conventions before it ships.
 ---
 
 # Public API & compatibility
@@ -85,6 +85,37 @@ Two facts about this repo shape your work:
   patch — at a path no glob in that array matches. Where the array carries paired
   `src`/`build` globs, require both.
 
+## New public API — design against the documented conventions
+
+The cheapest moment to fix an API is before it publishes; afterwards, every fix above is
+your problem. So when the diff **adds** public surface — a new `Function`, `AsyncFunction`,
+`Property`, `Events`, `View`, or `Prop` in a module definition, a new exported type or
+function, a new config-plugin property — judge it against the conventions this repo
+documents. Read them bounded, never the docs site: `docs/pages/modules/design.mdx` whole
+(~40 lines, the rationale), and `docs/pages/modules/module-api.mdx` by grep — only the
+sections for constructs the diff uses. Cite the published anchor
+(e.g. `/modules/module-api/#enums`) in the finding, the way a human reviewer links it.
+
+Flag, as `warning`, new API that:
+
+- wraps sync work in an `AsyncFunction` — no I/O, no thread hop, no long-running work. The
+  docs recommend `AsyncFunction` only for those cases; the JS signature follows and cannot
+  go sync later without breaking consumers.
+- hand-rolls string↔native-constant converters (paired `switch`/`when` plus a custom
+  invalid-value exception) where an `Enumerable` enum gives conversion and validation for
+  free, or takes an untyped dictionary where a `Record` is the documented shape.
+- accepts invalid states in an exported type — mutually exclusive fields both optional in
+  one object where a discriminated union encodes the constraint. Runtime validation of the
+  same constraint is evidence the type is wrong, not a substitute.
+- adds opt-in machinery — a config-plugin property, a manifest flag, a query API — around a
+  platform SDK capability the platform itself ships ungated. Check how the wrapped SDK
+  gates the same capability; propose removing the machinery, not hardening it.
+
+A stated reason for diverging (in a comment or the PR description) ends the finding —
+verify the stated constraint if you can, then move on. Shipped API, naming, and anything a
+linter owns stay out of scope here; a borderline call the docs do not settle is a
+`suggestion`, which phase-1 policy drops — prefer writing nothing.
+
 ## What NOT to flag
 
 - **Purely additive surface.** A new optional property on an options type, a new exported
@@ -109,4 +140,6 @@ Two facts about this repo shape your work:
   already enforced mechanically. You judge the heading and the wording, not the existence.
 
 State which consumer code breaks and how. If you cannot name the import or call that stops
-working, the finding is not ready. Prefer zero findings over a speculative one.
+working, the finding is not ready — for a new-API design finding, the bar is the documented
+convention (with its anchor) and the conforming shape instead. Prefer zero findings over a
+speculative one.
