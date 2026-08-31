@@ -107,9 +107,6 @@ Flag, as `warning`, new API that:
 - accepts invalid states in an exported type — mutually exclusive fields both optional in
   one object where a discriminated union encodes the constraint. Runtime validation of the
   same constraint is evidence the type is wrong, not a substitute.
-- adds opt-in machinery — a config-plugin property, a manifest flag, a query API — around a
-  platform SDK capability the platform itself ships ungated. Check how the wrapped SDK
-  gates the same capability; propose removing the machinery, not hardening it.
 
 A stated reason for diverging (in a comment or the PR description) ends the finding —
 verify the stated constraint if you can, then move on. Shipped API, naming, and anything a
