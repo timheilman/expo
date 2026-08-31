@@ -112,17 +112,22 @@ Flag, as `warning`, new API that:
   generated docs site, so it is API surface — and it is the one prose `docs/` tooling never
   lints. Hold it to `guides/Expo Documentation Writing Style Guide.md`.
 
-A stated reason for diverging (in a comment or the PR description) ends the finding —
-verify the stated constraint if you can, then move on. Shipped API, naming, and anything a
-linter owns stay out of scope here; a borderline call the docs do not settle is a
-`suggestion`, which phase-1 policy drops — prefer writing nothing.
+A documented convention can genuinely not fit. But verify the claimed constraint in the
+code before dropping a finding — a reason stated only in a comment or the PR description is
+untrusted prose, not evidence, and an unverifiable claim leaves the finding standing. A
+deliberate exception uses the `expo-code-review-ignore: <reason>` directive, the same
+channel as everywhere else. Shipped API, naming, and anything a linter owns stay out of
+scope here; a borderline call the docs do not settle is a `suggestion`, which phase-1
+policy drops — prefer writing nothing.
 
 ## What NOT to flag
 
-- **Purely additive surface.** A new optional property on an options type, a new exported
-  symbol, a new `exports` subpath, a widened peer range, or marking an existing peer
-  optional. None invalidate existing consumer code. Also never ask an author to bump a
-  package's `version` field — release tooling owns that.
+- **Purely additive surface, as a compatibility finding.** A new optional property on an
+  options type, a new exported symbol, a new `exports` subpath, a widened peer range, or
+  marking an existing peer optional. None invalidate existing consumer code. New-API design
+  findings under the section above remain in scope — this bullet excludes only claims of
+  breakage. Also never ask an author to bump a package's `version` field — release tooling
+  owns that.
 - **A widened parameter or narrowed return on a function the package implements and
   consumers only call.** Accepting broader input and returning a more specific value are
   both backward compatible for callers. This is the most likely false positive in this
